@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Enterprise Wallpaper Upload</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <div class="container">
+
+    <div class="card">
+
+      <h1>Enterprise Wallpaper Upload</h1>
+      <p class="subtitle">
+        Secure • Audited • RBAC Controlled • SHA-256 Verified
+      </p>
+
+      <form id="uploadForm">
+
+        <label>Bearer Token (Microsoft Entra ID)</label>
+        <input type="text" id="token" placeholder="Paste JWT access token here" required />
+
+        <label>Select PNG Wallpaper</label>
+        <input type="file" id="wallpaper" accept="image/png" required />
+
+        <div class="checkbox-row">
+          <input type="checkbox" id="emailConfirm" />
+          <label for="emailConfirm">Send Email Confirmation</label>
+        </div>
+
+        <div id="emailSection" class="hidden">
+          <label>Email Address</label>
+          <input type="email" id="email" placeholder="user@company.com" />
+        </div>
+
+        <button type="submit">Upload Securely</button>
+
+      </form>
+
+      <div id="responseBox" class="response hidden"></div>
+
+    </div>
+
+  </div>
+
+<script>
+const form = document.getElementById('uploadForm');
+const emailConfirm = document.getElementById('emailConfirm');
+const emailSection = document.getElementById('emailSection');
+const responseBox = document.getElementById('responseBox');
+
+emailConfirm.addEventListener('change', () => {
+  emailSection.classList.toggle('hidden', !emailConfirm.checked);
+});
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const token = document.getElementById('token').value;
+  const file = document.getElementById('wallpaper').files[0];
+  const email = document.getElementById('email').value;
+
+  const formData = new FormData();
+  formData.append("wallpaper", file);
+
+  if (emailConfirm.checked && email) {
+    formData.append("emailConfirm", "true");
+    formData.append("email", email);
+  }
+
+  try {
+    const response = await fetch("/upload", {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer " + token
+      },
+      body: formData
+    });
+
+    const result = await response.json();
+
+    responseBox.classList.remove("hidden");
+
+    if (response.ok) {
+      responseBox.className = "response success";
+      responseBox.innerHTML = `
+        <strong>Upload Successful</strong><br/>
+        SHA-256 Hash:<br/>
+        <code>${result.hash}</code>
+      `;
+    } else {
+      responseBox.className = "response error";
+      responseBox.innerText = result.error;
+    }
+
+  } catch (err) {
+    responseBox.className = "response error";
+    responseBox.innerText = "Network or server error.";
+  }
+});
+</script>
+
+</body>
+</html>
