@@ -1,9 +1,3 @@
-#deployment command:
-#az deployment group create \
-#  --resource-group rg-wallpaper-prod \
-#  --template-file azuredeploy.json \
-#  --parameters tenantId=<tenant-id> clientId=<app-registration-client-id>
-
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
