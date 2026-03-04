@@ -1,4 +1,4 @@
-# W.A.W.E.T
+# W.A.W.E.T v1.1
 Wallpapers Aren't Wasting Engineers Time 
 
 Hey does changing the wallpaper and lockscreen in Windows 11 sounds like something you would like to do?
