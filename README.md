@@ -170,3 +170,45 @@ These events are queryable in Application Insights:
 
 customEvents
 | where name == "WallpaperUpload"
+
+
+
+**Compliance Alignment**
+
+This architecture aligns with:
+
+ISO 27001 secure logging controls
+SOC 2 integrity and confidentiality principles
+Zero Trust architecture patterns
+Azure Well-Architected Framework
+
+
+**Contributing**
+
+Pull requests are welcome.
+
+Please:
+
+Follow secure coding practices
+Avoid introducing secrets
+Document any infrastructure changes
+
+
+
+**License**
+
+MIT License
+
+
+
+**Philosophy**
+
+W.A.W.E.T exists to demonstrate that:
+
+Security, governance, and enterprise engineering discipline
+can be applied to even the smallest workflows.
+
+Because good engineering habits scale.
+
+Also, changing wallpapers is stupid, if you don't have a great reason to do it at scale just save everybody the effort and don;t do it.  
+If you absolutely do, only do it once and make it somebody else's problem. 
