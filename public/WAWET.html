@@ -1,104 +1,395 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Enterprise Wallpaper Upload</title>
-  <link rel="stylesheet" href="styles.css" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Enterprise Wallpaper Upload</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg-main: radial-gradient(circle at 20% 20%, #1e293b, #0f172a 60%);
+  --card-bg: rgba(255,255,255,0.05);
+  --border-color: rgba(255,255,255,0.08);
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --input-bg: #0f172a;
+}
+
+body.light {
+  --bg-main: #f1f5f9;
+  --card-bg: rgba(255,255,255,0.85);
+  --border-color: rgba(0,0,0,0.08);
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --input-bg: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: var(--bg-main);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Subtle animated particles */
+body::before {
+  content: "";
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  background-image: radial-gradient(#3b82f6 1px, transparent 1px);
+  background-size: 60px 60px;
+  opacity: 0.04;
+  animation: moveBg 60s linear infinite;
+}
+
+@keyframes moveBg {
+  from { transform: translate(0,0); }
+  to { transform: translate(-200px,-200px); }
+}
+
+/* Theme Toggle */
+.theme-toggle {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: 13px;
+  cursor: pointer;
+  color: var(--text-secondary);
+}
+
+/* Card */
+.card {
+  position: relative;
+  padding: 48px;
+  width: 480px;
+  border-radius: 18px;
+  background: var(--card-bg);
+  backdrop-filter: blur(18px);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  animation: cardEnter 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Gradient border glow */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 18px;
+  padding: 1px;
+  background: linear-gradient(135deg, #3b82f6, #6366f1, #8b5cf6);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0.5;
+}
+
+@keyframes cardEnter {
+  0% { opacity: 0; transform: translateY(20px) scale(0.98); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+h1 {
+  font-size: 22px;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 32px;
+}
+
+label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  display: block;
+  margin-bottom: 6px;
+}
+
+input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  background: var(--input-bg);
+  color: var(--text-primary);
+  margin-bottom: 18px;
+  font-size: 14px;
+}
+
+/* Hidden bearer token */
+.hidden-token {
+  display: none;
+}
+
+/* Drag Zone */
+.drop-zone {
+  border: 1px dashed var(--border-color);
+  padding: 30px;
+  text-align: center;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.drop-zone.dragover {
+  border-color: #3b82f6;
+  background: rgba(59,130,246,0.08);
+}
+
+.drop-zone input { display: none; }
+
+/* Checkbox */
+.checkbox-row {
+  margin-bottom: 22px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.checkbox-label input {
+  width: 16px;
+  height: 16px;
+  accent-color: #3b82f6;
+  margin: 0;
+}
+
+.checkbox-subtext {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-left: 26px;
+  margin-top: 4px;
+}
+
+/* Button */
+button {
+  width: 100%;
+  padding: 14px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 600;
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  color: white;
+  cursor: pointer;
+}
+
+button:disabled { opacity: 0.6; }
+
+/* Progress */
+.progress-container {
+  width: 100%;
+  background: var(--border-color);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-top: 15px;
+  height: 8px;
+  display: none;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg,#3b82f6,#6366f1);
+  transition: width 0.2s ease;
+}
+
+.progress-text {
+  font-size: 12px;
+  text-align: right;
+  margin-top: 6px;
+  color: var(--text-secondary);
+}
+
+/* Success */
+.success-check {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 3px solid #22c55e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px auto;
+}
+
+.success-check svg {
+  stroke: #22c55e;
+  stroke-width: 3;
+  fill: none;
+  stroke-dasharray: 50;
+  stroke-dashoffset: 50;
+  animation: draw 0.6s ease forwards;
+}
+
+@keyframes draw { to { stroke-dashoffset: 0; } }
+
+.hash-box {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.copy-btn {
+  padding: 0 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: var(--input-bg);
+  cursor: pointer;
+}
+
+.hidden { display: none; }
+.response { margin-top: 20px; text-align: center; }
+
+</style>
 </head>
 <body>
 
-  <div class="container">
+<div class="theme-toggle" id="themeToggle">Toggle Theme</div>
 
-    <div class="card">
+<div class="card">
 
-      <h1>Enterprise Wallpaper Upload</h1>
-      <p class="subtitle">
-        Secure • Audited • RBAC Controlled • SHA-256 Verified
-      </p>
+<h1>Enterprise Wallpaper Upload</h1>
+<p class="subtitle">Secure • Audited • RBAC Controlled • SHA-256 Verified</p>
 
-      <form id="uploadForm">
+<form id="uploadForm">
 
-        <label>Bearer Token (Microsoft Entra ID)</label>
-        <input type="text" id="token" placeholder="Paste JWT access token here" required />
+<div class="hidden-token">
+  <input type="password" id="token" value="DEV_STATIC_TOKEN_PLACEHOLDER" />
+</div>
 
-        <label>Select PNG Wallpaper</label>
-        <input type="file" id="wallpaper" accept="image/png" required />
+<label>Wallpaper (PNG)</label>
+<div class="drop-zone" id="dropZone">
+  Drag & Drop PNG here or click to browse
+  <input type="file" id="wallpaper" accept="image/png" required />
+</div>
 
-        <div class="checkbox-row">
-          <input type="checkbox" id="emailConfirm" />
-          <label for="emailConfirm">Send Email Confirmation</label>
-        </div>
-
-        <div id="emailSection" class="hidden">
-          <label>Email Address</label>
-          <input type="email" id="email" placeholder="user@company.com" />
-        </div>
-
-        <button type="submit">Upload Securely</button>
-
-      </form>
-
-      <div id="responseBox" class="response hidden"></div>
-
-    </div>
-
+<div class="checkbox-row">
+  <label class="checkbox-label">
+    <input type="checkbox" id="emailConfirm" />
+    <span>Send confirmation email</span>
+  </label>
+  <div class="checkbox-subtext">
+    Email will be sent to the authenticated user.
   </div>
+</div>
+
+<button type="submit">Upload Securely</button>
+
+<div class="progress-container" id="progressContainer">
+  <div class="progress-bar" id="progressBar"></div>
+</div>
+<div class="progress-text" id="progressText"></div>
+
+</form>
+
+<div id="responseBox" class="response hidden"></div>
+
+</div>
 
 <script>
+const body = document.body;
+const themeToggle = document.getElementById('themeToggle');
+
+if (localStorage.getItem('theme') === 'light') body.classList.add('light');
+
+themeToggle.onclick = () => {
+  body.classList.toggle('light');
+  localStorage.setItem('theme', body.classList.contains('light') ? 'light' : 'dark');
+};
+
+/* Drag Drop */
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('wallpaper');
+
+dropZone.onclick = () => fileInput.click();
+dropZone.ondragover = e => { e.preventDefault(); dropZone.classList.add('dragover'); };
+dropZone.ondragleave = () => dropZone.classList.remove('dragover');
+dropZone.ondrop = e => {
+  e.preventDefault();
+  dropZone.classList.remove('dragover');
+  fileInput.files = e.dataTransfer.files;
+};
+
+/* Upload */
 const form = document.getElementById('uploadForm');
-const emailConfirm = document.getElementById('emailConfirm');
-const emailSection = document.getElementById('emailSection');
+const progressBar = document.getElementById('progressBar');
+const progressContainer = document.getElementById('progressContainer');
+const progressText = document.getElementById('progressText');
 const responseBox = document.getElementById('responseBox');
 
-emailConfirm.addEventListener('change', () => {
-  emailSection.classList.toggle('hidden', !emailConfirm.checked);
-});
-
-form.addEventListener('submit', async (e) => {
+form.addEventListener('submit', function(e) {
   e.preventDefault();
 
-  const token = document.getElementById('token').value;
-  const file = document.getElementById('wallpaper').files[0];
-  const email = document.getElementById('email').value;
-
   const formData = new FormData();
-  formData.append("wallpaper", file);
+  formData.append("wallpaper", fileInput.files[0]);
 
-  if (emailConfirm.checked && email) {
+  if (document.getElementById("emailConfirm").checked) {
     formData.append("emailConfirm", "true");
-    formData.append("email", email);
   }
 
-  try {
-    const response = await fetch("/upload", {
-      method: "POST",
-      headers: {
-        "Authorization": "Bearer " + token
-      },
-      body: formData
-    });
+  const xhr = new XMLHttpRequest();
+  xhr.open("POST", "/upload", true);
+  xhr.setRequestHeader("Authorization", "Bearer " + document.getElementById('token').value);
 
-    const result = await response.json();
+  progressContainer.style.display = "block";
 
+  xhr.upload.onprogress = function(e) {
+    if (e.lengthComputable) {
+      const percent = Math.round((e.loaded / e.total) * 100);
+      progressBar.style.width = percent + "%";
+      progressText.innerText = percent + "%";
+    }
+  };
+
+  xhr.onload = function() {
+    const result = JSON.parse(xhr.responseText);
     responseBox.classList.remove("hidden");
 
-    if (response.ok) {
-      responseBox.className = "response success";
+    if (xhr.status === 200) {
       responseBox.innerHTML = `
-        <strong>Upload Successful</strong><br/>
-        SHA-256 Hash:<br/>
-        <code>${result.hash}</code>
+        <div class="success-check">
+          <svg viewBox="0 0 24 24">
+            <path d="M4 12l5 5 10-10"/>
+          </svg>
+        </div>
+        <strong>Upload Successful</strong>
+        <div class="hash-box">
+          <input type="text" value="${result.hash}" readonly />
+          <button class="copy-btn">Copy</button>
+        </div>
       `;
-    } else {
-      responseBox.className = "response error";
-      responseBox.innerText = result.error;
-    }
 
-  } catch (err) {
-    responseBox.className = "response error";
-    responseBox.innerText = "Network or server error.";
-  }
+      document.querySelector(".copy-btn").onclick = () => {
+        navigator.clipboard.writeText(result.hash);
+      };
+
+    } else {
+      responseBox.innerHTML = `<span style="color:#ef4444">${result.error}</span>`;
+    }
+  };
+
+  xhr.send(formData);
 });
 </script>
 
