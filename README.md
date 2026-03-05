@@ -12,7 +12,7 @@ W.A.W.E.T is a secure wallpaper upload and validation service designed for enter
 
 It ensures:
 --Only approved resolutions are accepted
---Only PNG images are allowed
+--JPEG and PNG files accepted, JPEG converted to PNG client side
 --Files are integrity-verified via SHA-256 hashing
 --Uploads are authenticated using Microsoft Entra ID
 --Storage access uses Azure Managed Identity (no secrets)
