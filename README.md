@@ -19,6 +19,10 @@ It ensures:
 --All activity is logged for audit and forensic purposes
 --This project demonstrates secure-by-design implementation aligned with modern Azure security architecture.
 
+
+<img width="646" height="650" alt="image" src="https://github.com/user-attachments/assets/ef459e54-f25e-4ec3-9393-06e8faf9fea8" />
+
+
 **High Level Architecture Flow**
 
 User
